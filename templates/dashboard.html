@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vision Suite | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .card { 
+            background: white; 
+            padding: 1.5rem; 
+            border-radius: 0.75rem; 
+            border: 1px solid #e2e8f0; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+            transition: transform 0.2s ease;
+        }
+        .card:hover { transform: translateY(-2px); }
+        .highlight { color: #059669; font-weight: bold; } /* Emerald-600 */
+        .highlight-blue { color: #2563eb; font-weight: bold; } /* Blue-600 */
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    
+    <div class="max-w-5xl mx-auto pt-10 px-6 text-center">
+        <h1 class="text-4xl font-bold text-emerald-600 mb-2">Welcome, {{ user }}!</h1>
+        <p class="text-gray-600">Your Vision & Focus Suite is active. Use the tools below to optimize your workspace and mindset.</p>
+    </div>
+
+    <main class="max-w-5xl mx-auto p-8 space-y-8">
+
+        <div class="card border-l-4 border-emerald-500 flex flex-col md:flex-row justify-between items-center bg-emerald-50/30">
+            <div class="mb-4 md:mb-0">
+                <h2 class="text-xl font-bold text-emerald-800">Focus Shield AI 🛡️</h2>
+                <p class="text-gray-500">Enable real-time monitoring to detect mobile distractions instantly.</p>
+            </div>
+            <button onclick="launchAI()" class="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl shadow-md transition transform active:scale-95">
+                Launch Camera App
+            </button>
+        </div>
+
+        <div class="card">
+            <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <span>Distraction Guard</span> <span class="text-sm font-normal text-gray-400">| Strategy Guide</span>
+            </h2>
+            <div class="flex flex-col md:flex-row gap-4 mb-6">
+                <select id="distractionType" class="flex-grow p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-emerald-400 outline-none">
+                    <option value="">What is distracting you?</option>
+                    <option value="mobile">Using Mobile Phone</option>
+                    <option value="laptop">Endless Laptop Browsing</option>
+                    <option value="games">Gaming / Entertainment</option>
+                </select>
+                <button onclick="getRecommendation()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-8 rounded-lg transition">
+                    Analyze
+                </button>
+            </div>
+            <div id="recommendationBox" class="p-6 bg-emerald-50/50 rounded-xl border border-emerald-100 text-gray-700 min-h-[120px]">
+                <p class="italic text-gray-400 text-center">Select a distraction above to receive a deep-focus strategy.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="text-xl font-bold text-blue-600 mb-4 flex items-center gap-2">
+                <span>Mind Minutes</span> <span class="text-sm font-normal text-gray-400">| Stress Relief</span>
+            </h2>
+            <div class="flex flex-col md:flex-row gap-4 mb-6">
+                <select id="stressNeed" class="flex-grow p-3 border rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-400 outline-none">
+                    <option value="">Select your mental state...</option>
+                    <option value="calm">I need a quick 3-minute calm</option>
+                    <option value="focus">I need to regain deep focus</option>
+                    <option value="overwhelmed">I'm feeling overwhelmed by tasks</option>
+                    <option value="tired">I'm feeling tired / low energy</option>
+                    <option value="anxious">I'm anxious about a deadline</option>
+                </select>
+                <button onclick="getExercise()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-8 rounded-lg transition">
+                    Start Exercise
+                </button>
+            </div>
+            <div id="exerciseBox" class="p-6 bg-blue-50/50 rounded-xl border border-blue-100 text-gray-700 min-h-[150px]">
+                <p class="italic text-gray-400 text-center">Select a need above to receive a guided relaxation technique.</p>
+            </div>
+        </div>
+
+        <div class="text-center pb-10">
+            <a href="/logout" class="text-red-400 hover:text-red-600 text-sm font-medium transition underline">Log out of Secure Session</a>
+        </div>
+    </main>
+
+    <script>
+        // Logic for launching the Python AI Vision Engine
+        async function launchAI() {
+            try {
+                const response = await fetch('/launch_ai', { method: 'POST' });
+                const data = await response.json();
+                alert(data.status);
+            } catch (error) {
+                console.error("Failed to launch AI:", error);
+                alert("Error connecting to AI backend.");
+            }
+        }
+
+        // Expanded Data for Distraction Guard
+        function getRecommendation() {
+            const type = document.getElementById('distractionType').value;
+            const box = document.getElementById('recommendationBox');
+            
+            const content = {
+                "mobile": `
+                    <h3 class="font-bold text-emerald-800 mb-2">Strategy: Digital Physicality</h3>
+                    <ul class="list-disc ml-5 space-y-2 text-sm">
+                        <li><span class="highlight">Action:</span> Place your phone in a drawer or a separate room. Visibility is the biggest trigger.</li>
+                        <li><span class="highlight">Why:</span> Studies show having a phone within reach reduces cognitive capacity, even if it's off.</li>
+                        <li><span class="highlight">Pro-Tip:</span> Use "Grey Scale" mode to make the screen less hits-of-dopamine friendly.</li>
+                    </ul>`,
+                "laptop": `
+                    <h3 class="font-bold text-emerald-800 mb-2">Strategy: Tab Zero Policy</h3>
+                    <ul class="list-disc ml-5 space-y-2 text-sm">
+                        <li><span class="highlight">Action:</span> Close all tabs except the one you are currently working on.</li>
+                        <li><span class="highlight">Why:</span> Task-switching costs you 40% of your productive time.</li>
+                        <li><span class="highlight">Pro-Tip:</span> Use a dedicated browser strictly for work, and another for personal use.</li>
+                    </ul>`,
+                "games": `
+                    <h3 class="font-bold text-emerald-800 mb-2">Strategy: Reset Internal Clock</h3>
+                    <ul class="list-disc ml-5 space-y-2 text-sm">
+                        <li><span class="highlight">Action:</span> Close the game and physically move to a different room for 5 minutes.</li>
+                        <li><span class="highlight">Why:</span> Physical movement breaks the "mental loop" of gaming immersion.</li>
+                        <li><span class="highlight">Pro-Tip:</span> Set a physical hardware timer instead of an on-screen alarm.</li>
+                    </ul>`
+            };
+            box.innerHTML = content[type] || '<p class="text-red-400">Please select an option first.</p>';
+        }
+
+        // Expanded Data for Mind Minutes
+        function getExercise() {
+            const type = document.getElementById('stressNeed').value;
+            const box = document.getElementById('exerciseBox');
+            
+            const content = {
+                "calm": `
+                    <h3 class="font-bold text-blue-800 mb-2">Technique: Box Breathing (4-4-4-4)</h3>
+                    <div class="text-sm space-y-2">
+                        <p><span class="highlight-blue">1. Inhale:</span> Breathe in through your nose for 4 seconds.</p>
+                        <p><span class="highlight-blue">2. Hold:</span> Keep the air in your lungs for 4 seconds.</p>
+                        <p><span class="highlight-blue">3. Exhale:</span> Release slowly through your mouth for 4 seconds.</p>
+                        <p><span class="highlight-blue">4. Wait:</span> Wait 4 seconds before the next breath.</p>
+                    </div>`,
+                "focus": `
+                    <h3 class="font-bold text-blue-800 mb-2">Technique: Sensory Grounding (5-4-3-2-1)</h3>
+                    <div class="text-sm space-y-1">
+                        <p><span class="highlight-blue">5:</span> Name 5 things you can see around you.</p>
+                        <p><span class="highlight-blue">4:</span> Name 4 things you can physically touch.</p>
+                        <p><span class="highlight-blue">3:</span> Name 3 distinct sounds you can hear.</p>
+                        <p><span class="highlight-blue">2:</span> Name 2 things you can smell.</p>
+                        <p><span class="highlight-blue">1:</span> Name 1 thing you can taste.</p>
+                    </div>`,
+                "overwhelmed": `
+                    <h3 class="font-bold text-blue-800 mb-2">Technique: Brain Dump & Categorize</h3>
+                    <div class="text-sm space-y-2">
+                        <p><span class="highlight-blue">Step 1:</span> Write down every task on your mind for 60 seconds.</p>
+                        <p><span class="highlight-blue">Step 2:</span> Circle the <b>one</b> task that must be done today.</p>
+                        <p><span class="highlight-blue">Step 3:</span> Ignore everything else until that one task is complete.</p>
+                    </div>`,
+                "tired": `
+                    <h3 class="font-bold text-blue-800 mb-2">Technique: The 20-20-20 Power Up</h3>
+                    <div class="text-sm space-y-2">
+                        <p><span class="highlight-blue">Eyes:</span> Look at an object 20 feet away for 20 seconds.</p>
+                        <p><span class="highlight-blue">Body:</span> Stand up and stretch your arms toward the ceiling.</p>
+                        <p><span class="highlight-blue">Oxygen:</span> Take 5 fast, deep breaths to increase blood flow.</p>
+                    </div>`,
+                "anxious": `
+                    <h3 class="font-bold text-blue-800 mb-2">Technique: Physiological Sigh</h3>
+                    <div class="text-sm space-y-2">
+                        <p><span class="highlight-blue">How:</span> Take a deep breath, then a second short "sip" of air at the very top.</p>
+                        <p><span class="highlight-blue">Exhale:</span> One very long, slow breath out through your mouth.</p>
+                        <p class="mt-2 italic text-blue-600">This is the fastest biological way to lower stress levels.</p>
+                    </div>`
+            };
+            box.innerHTML = content[type] || '<p class="text-red-400">Please select an option first.</p>';
+        }
+    </script>
+</body>
+</html>
